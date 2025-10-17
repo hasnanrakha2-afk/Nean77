@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RedWing Bug Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .login-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(255, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 0, 0, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .wing-profile {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .wing {
+            position: absolute;
+            width: 60px;
+            height: 100px;
+            background: linear-gradient(135deg, #ff0000 0%, #ff6600 100%);
+            border-radius: 50% 10% 50% 10%;
+            opacity: 0.9;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+
+        .wing-left {
+            left: 0;
+            transform: rotate(-20deg);
+            animation: flap-left 2s ease-in-out infinite;
+        }
+
+        .wing-right {
+            right: 0;
+            transform: rotate(20deg);
+            animation: flap-right 2s ease-in-out infinite;
+        }
+
+        @keyframes flap-left {
+            0%, 100% { transform: rotate(-20deg); }
+            50% { transform: rotate(-30deg); }
+        }
+
+        @keyframes flap-right {
+            0%, 100% { transform: rotate(20deg); }
+            50% { transform: rotate(30deg); }
+        }
+
+        .profile-center {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #ff6600 0%, #ff0000 100%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
+        }
+
+        h1 {
+            color: #ff6600;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ff6600;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+            transform: scale(1.02);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff0000 0%, #ff6600 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.5);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .dashboard {
+            display: none;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(255, 0, 0, 0.3);
+            text-align: center;
+            max-width: 700px;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .bug-tools {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .bug-btn {
+            padding: 20px;
+            background: linear-gradient(135deg, #ff0000 0%, #ff3300 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bug-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .bug-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .bug-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.5);
+        }
+
+        .phone-input {
+            margin: 20px 0;
+        }
+
+        .success-message {
+            display: none;
+            color: #00ff00;
+            font-size: 18px;
+            margin-top: 20px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ff0000;
+            border-radius: 50%;
+            animation: float-particle 10s infinite linear;
+        }
+
+        @keyframes float-particle {
+            from {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="login-container" id="loginContainer">
+        <div class="wing-profile">
+            <div class="wing wing-left"></div>
+            <div class="wing wing-right"></div>
+            <div class="profile-center">R</div>
+        </div>
+        <h1>RedWing Bug Tool</h1>
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Masukkan Username...." required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Masukkan Password...." required>
+            </div>
+            <button type="submit">LOGIN</button>
+        </form>
+    </div>
+
+    <div class="dashboard" id="dashboard">
+        <div class="wing-profile">
+            <div class="wing wing-left"></div>
+            <div class="wing wing-right"></div>
+            <div class="profile-center">R</div>
+        </div>
+        <h1 style="color: #ff6600; margin-bottom: 20px;">WhatsApp Bug Tool</h1>
+        
+        <div class="phone-input">
+            <input type="tel" id="phoneNumber" placeholder="e.g = 62xxx" style="width: 300px;">
+        </div>
+        
+        <div class="bug-tools">
+            <button class="bug-btn" onclick="bugWhatsApp('crash')">Ui Crash</button>
+            <button class="bug-btn" onclick="bugWhatsApp('freeze')">Freeze Delay</button>
+            <button class="bug-btn" onclick="bugWhatsApp('xpay')">Xpay Delay</button>
+            <button class="bug-btn" onclick="bugWhatsApp('forceclose')">Forclose</button>
+            <button class="bug-btn" onclick="bugWhatsApp('iphone')">Crash iPhone</button>
+            <button class="bug-btn" onclick="bugWhatsApp('bugiphone')">Bug iPhone</button>
+        </div>
+        
+        <div class="success-message" id="successMessage">
+            ✅ Nomer Ini Berhasil Di Bug
+        </div>
+    </div>
+
+    <script>
+        // Create particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'Nean' && password === 'Nean123') {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+            } else {
+                alert('Username atau Password salah!');
+            }
+        });
+
+        // Bug functionality (simulated)
+        function bugWhatsApp(type) {
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            if (!phoneNumber) {
+                alert('Masukkan nomor telepon terlebih dahulu!');
+                return;
+            }
+            
+            // Simulate bug process
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+            
+            // In a real scenario, this would send a request to your API
+            console.log(`Bug type ${type} sent to ${phoneNumber}`);
+        }
+    </script>
+</body>
+</html>

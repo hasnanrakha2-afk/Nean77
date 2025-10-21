@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>WhatsApp Banned Account Recovery</title>
+<style>
+  :root{
+    --accent:#25d366;
+    --bg:#0f0f0f;
+    --card:#1e1e1e;
+    --glass:rgba(255,255,255,.05);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial}
+  body{
+    background:var(--bg);
+    color:#fff;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:2rem;
+    background-image:radial-gradient(circle at 50% 50%,rgba(37,211,102,.08),transparent 60%);
+  }
+  .card{
+    width:100%;
+    max-width:440px;
+    background:var(--card);
+    border:1px solid var(--glass);
+    border-radius:var(--radius);
+    padding:2.2rem 2rem;
+    box-shadow:0 12px 40px rgba(0,0,0,.5);
+    backdrop-filter:blur(10px);
+    animation:fade .8s ease;
+  }
+  @keyframes fade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  h1{margin-bottom:1.2rem;font-size:1.5rem;text-align:center;letter-spacing:.5px}
+  label{font-size:.85rem;margin-top:1rem;display:block;opacity:.8}
+  input,select,textarea{
+    width:100%;
+    padding:.65rem .8rem;
+    border:none;
+    border-radius:8px;
+    background:var(--glass);
+    color:#fff;
+    font-size:1rem;
+    transition:background .2s;
+  }
+  input:focus,select:focus,textarea:focus{outline:none;background:rgba(255,255,255,.12)}
+  button{
+    width:100%;
+    margin-top:1.4rem;
+    padding:.75rem;
+    border:none;
+    border-radius:8px;
+    background:var(--accent);
+    color:#000;
+    font-weight:700;
+    font-size:1rem;
+    cursor:pointer;
+    transition:transform .15s, background .2s;
+  }
+  button:hover{background:#1ebe5d}
+  button:active{transform:scale(.98)}
+  #appealBox{
+    width:100%;
+    margin-top:1.2rem;
+    padding:.8rem;
+    border-radius:8px;
+    background:var(--glass);
+    color:#fff;
+    font-size:.95rem;
+    resize:vertical;
+    min-height:120px;
+    display:none;
+  }
+  .ok{
+    text-align:center;
+    margin-top:.8rem;
+    font-size:.85rem;
+    opacity:.7;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Pulihkan Akun WhatsApp</h1>
+
+    <label>Kode error yang muncul
+      <select id="err">
+        <option value="This account is blocked">"This account is blocked"</option>
+        <option value="Temporarily banned">"Temporarily banned"</option>
+        <option value="Spam / suspicious activity">Spam / suspicious activity</option>
+        <option value="Other">Lainnya</option>
+      </select>
+    </label>
+
+    <label>Nomor telepon (628...)
+      <input type="tel" id="phone" placeholder="6281234567890" maxlength="15"/>
+    </label>
+
+    <label>Penjelasan tambahan (opsional)
+      <textarea id="reason" rows="3" placeholder="Contoh: nomor baru, tiba-tiba diban"></textarea>
+    </label>
+
+    <button id="btnGen">Buat Surat Banding</button>
+
+    <textarea id="appealBox" readonly></textarea>
+    <div class="ok" id="ok" style="display:none">✓ Tersalin & email client dibuka</div>
+  </div>
+
+<script>
+(()=>{
+  const $=q=>document.querySelector(q);
+  const errSel=$('#err'), phone=$('#phone'), reason=$('#reason'),
+        btn=$('#btnGen'), box=$('#appealBox'), ok=$('#ok');
+
+  btn.addEventListener('click',()=>{
+    const hp=phone.value.trim();
+    if(!/^628\d{8,}$/.test(hp)) return alert('Nomor 628xx minimal 11 digit');
+    const text=`Dear WhatsApp Support,
+
+I am writing to appeal the suspension of my WhatsApp account.
+Phone number: +${hp}
+Error shown: ${errSel.value}
+
+Additional information:
+${reason.value || 'I believe this ban was applied by mistake. I always comply with Terms of Service.'}
+
+Please find attached a copy of my ID for verification.
+
+Thank you for your assistance.
+
+Best regards,
+[Your Name]`;
+    box.value=text;
+    box.style.display='block';
+    ok.style.display='block';
+    box.select();
+    document.execCommand('copy');
+    window.open('mailto:support@whatsapp.com?subject=Appeal for Banned Account');
+  });
+})();
+</script>
+</body>
+</html>

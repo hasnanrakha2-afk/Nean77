@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>👾 Bug Sender</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+:root{
+  --h:180;
+  --g1:hsl(var(--h),80%,50%);
+  --g2:hsl(calc(var(--h) + 60),80%,50%);
+  --g3:hsl(calc(var(--h) + 120),80%,50%);
+}
+*{box-sizing:border-box;font-family:'Orbitron',system-ui;margin:0;padding:0;}
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;
+  overflow:hidden;
+}
+.glass{
+  background:rgba(255,255,255,.05);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:1.5rem;
+  padding:2.5rem;
+  width:90%;
+  max-width:400px;
+  box-shadow:0 0 40px rgba(0,0,0,.5);
+}
+h1{font-size:2rem;text-align:center;margin-bottom:2rem;background:linear-gradient(45deg,var(--g1),var(--g2),var(--g3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.input-group{margin-bottom:1.2rem;}
+label{display:block;margin-bottom:.5rem;font-size:.9rem;color:#aaa;}
+input,select{
+  width:100%;
+  padding:.8rem 1rem;
+  border:none;
+  border-radius:.5rem;
+  background:rgba(255,255,255,.1);
+  color:#fff;
+  font-size:1rem;
+  transition:all .3s;
+}
+input:focus,select:focus{
+  outline:none;
+  background:rgba(255,255,255,.15);
+  box-shadow:0 0 10px var(--g1);
+}
+.btn{
+  width:100%;
+  padding:1rem;
+  border:none;
+  border-radius:.5rem;
+  font-size:1.1rem;
+  font-weight:700;
+  color:#fff;
+  background:linear-gradient(45deg,var(--g1),var(--g2));
+  cursor:pointer;
+  transition:all .3s;
+  position:relative;
+  overflow:hidden;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(0,0,0,.3);}
+.btn:active{transform:translateY(0);}
+.emoji{
+  font-size:5rem;
+  display:block;
+  text-align:center;
+  margin-bottom:1.5rem;
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-20px);}
+}
+@keyframes glow{
+  0%,100%{text-shadow:0 0 10px var(--g1),0 0 20px var(--g1);}
+  50%{text-shadow:0 0 20px var(--g2),0 0 30px var(--g2);}
+}
+.emoji{animation:float 3s ease-in-out infinite,glow 2s ease-in-out infinite alternate;}
+.hide{display:none;}
+.freeze{pointer-events:none;filter:blur(5px) brightness(0.5);}
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="glass" id="login">
+  <div class="emoji">🔐</div>
+  <h1>SECURITY LOGIN</h1>
+  <div class="input-group">
+    <input id="user" type="text" placeholder="Username" autocomplete="off"/>
+  </div>
+  <div class="input-group">
+    <input id="pass" type="password" placeholder="Password" autocomplete="off"/>
+  </div>
+  <button class="btn" onclick="login()">MASUK</button>
+</div>
+
+<!-- BUG FORM PAGE -->
+<div class="glass hide" id="bug">
+  <div class="emoji" id="e">👾</div>
+  <h1>BUG SENDER</h1>
+  <div class="input-group">
+    <label>Nomor Target</label>
+    <input id="n" type="tel" placeholder="62812xxx" maxlength="15"/>
+  </div>
+  <div class="input-group">
+    <label>Mode Bug</label>
+    <select id="b" onchange="adjustLength()">
+      <option value="15">Freeze Delay</option>
+      <option value="20">Crash iPhone</option>
+      <option value="20">Crash Android</option>
+      <option value="25">Forceclose iPhone</option>
+      <option value="25">Forceclose Android</option>
+    </select>
+  </div>
+  <button class="btn" id="k" onclick="sendBug()">KIRIM BUG</button>
+</div>
+
+<script>
+// LOGIN FUNCTION
+function login(){
+  const user = document.getElementById('user').value;
+  const pass = document.getElementById('pass').value;
+  if(user === 'Nean' && pass === 'Nean123'){
+    document.getElementById('login').classList.add('hide');
+    document.getElementById('bug').classList.remove('hide');
+    startEmoji();
+  } else {
+    alert('❌ Username atau Password salah!');
+  }
+}
+
+// ADJUST NOMOR LENGTH BASED ON BUG MODE
+function adjustLength(){
+  const mode = document.getElementById('b');
+  const nomor = document.getElementById('n');
+  nomor.maxLength = mode.value;
+  nomor.placeholder = `Masukkan ${mode.value} digit`;
+}
+
+// EMOJI ROTATION & COLOR CHANGE
+function startEmoji(){
+  const emojis = ['😈','☠️','👻','👿','😎','🥶','👾'];
+  let i = 0;
+  setInterval(()=>{
+    i = (i+1)%emojis.length;
+    document.getElementById('e').textContent = emojis[i];
+    document.documentElement.style.setProperty('--h', Math.random()*360);
+  }, 400);
+}
+
+// SEND BUG FUNCTION
+function sendBug(){
+  const nomor = document.getElementById('n').value.trim();
+  const required = parseInt(document.getElementById('b').value);
+  if(nomor.length < required){
+    alert(`Nomor harus ${required} digit!`);
+    return;
+  }
+  // EFFECT: FREEZE SCREEN
+  document.body.classList.add('freeze');
+  setTimeout(()=>{
+    document.body.classList.remove('freeze');
+    alert('✅ Bug terkirim! (Simulasi selesai)');
+  }, 5000);
+}
+
+// INIT
+adjustLength();
+</script>
+</body>
+                                                            </html>

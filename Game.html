@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coleccion Kartu - Superhero, Hewan & Bunga</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            transform: scale(1.02);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .card:hover::before {
+            animation: shine 0.5s ease-in-out;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-emoji {
+            font-size: 50px;
+            display: block;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(5deg); }
+            75% { transform: translateY(-5px) rotate(-5deg); }
+        }
+
+        .card-rarity {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .superhero-card {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
+
+        .animal-card {
+            background: linear-gradient(135deg, #2ed573 0%, #1e90ff 100%);
+            color: white;
+        }
+
+        .flower-card {
+            background: linear-gradient(135deg, #ff9ff3 0%, #feca57 100%);
+            color: white;
+        }
+
+        .rarity-5 { 
+            box-shadow: 0 0 30px #ffd700, 0 5px 20px rgba(0, 0, 0, 0.3);
+            border: 3px solid #ffd700;
+        }
+        .rarity-4 { 
+            box-shadow: 0 0 20px #c0c0c0, 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 2px solid #c0c0c0;
+        }
+        .rarity-3 { 
+            box-shadow: 0 0 15px #cd7f32, 0 3px 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid #cd7f32;
+        }
+        .rarity-2 { 
+            box-shadow: 0 0 10px #4ecdc4;
+            border: 1px solid #4ecdc4;
+        }
+        .rarity-1 { 
+            box-shadow: 0 0 5px #96ceb4;
+            border: 1px solid #96ceb4;
+        }
+
+        .rank-display {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .rank-icon {
+            font-size: 60px;
+            display: block;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        .rank-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .rank-progress {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            height: 20px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .rank-progress-bar {
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px #ffd700;
+        }
+
+        .spin-button {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            margin: 10px 5px;
+            display: inline-block;
+            width: auto;
+            padding: 15px 30px;
+            font-size: 18px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .success {
+            color: green;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .new-card-animation {
+            animation: newCard 0.8s ease-out;
+        }
+
+        @keyframes newCard {
+            0% { transform: scale(0) rotate(720deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(360deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .legendary-effect {
+            animation: legendary 2s ease-in-out infinite;
+        }
+
+        @keyframes legendary {
+            0%, 100% { 
+                box-shadow: 0 0 30px #ffd700, 0 0 60px #ffd700, 0 0 90px #ffd700;
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 50px #ffd700, 0 0 100px #ffd700, 0 0 150px #ffd700;
+                transform: scale(1.05);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Halaman Login -->
+    <div id="loginPage" class="page active">
+        <div class="container">
+            <h1>🔒 Game Coleccion Kartu</h1>
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Masukkan Aja Username Mu">
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Masukkan Aja Password Mu">
+            </div>
+            <div class="input-group">
+                <input type="password" id="confirmPassword" placeholder="Konfirmasi Password Yang Anda Masukkan">
+            </div>
+            <button onclick="login()">Login</button>
+            <div id="loginError" class="error"></div>
+        </div>
+    </div>
+
+    <!-- Halaman Home -->
+    <div id="homePage" class="page">
+        <div class="container">
+            <h1>👾 Game Coleksi Kartu 👾</h1>
+            <div id="rankDisplay" class="rank-display">
+                <span class="rank-icon">⭐</span>
+                <div class="rank-name">Colektor Baru</div>
+                <div>Koleksi: 0 Kartu</div>
+                <div class="rank-progress">
+                    <div class="rank-progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+            <button onclick="showPage('luckyPage')" class="spin-button">🌀 Lucky Spin</button>
+            <button onclick="showPage('profilePage')" class="spin-button">👤 Profile</button>
+            <button onclick="showPage('codePage')" class="spin-button">🔢 Kode</button>
+        </div>
+    </div>
+
+    <!-- Halaman Lucky Spin -->
+    <div id="luckyPage" class="page">
+        <div class="container">
+            <h1>🌀 Lucky Koleksi</h1>
+            <div style="text-align: center; margin: 20px 0;">
+                <div class="card-emoji legendary-effect">🦸‍♂️</div>
+                <span class="rarity-5" style="font-size: 20px;">Kartu Legendary!</span>
+            </div>
+            <div style="text-align: center;">
+                <button class="spin-button" onclick="spin(1)">1x Spin (10 Coin)</button>
+                <button class="spin-button" onclick="spin(10)">10x Spin (40 Coin)</button>
+            </div>
+            <div id="spinResult" style="margin-top: 20px;"></div>
+            <button onclick="showPage('homePage')">Kembali</button>
+        </div>
+    </div>
+
+    <!-- Halaman Profile -->
+    <div id="profilePage" class="page">
+        <div class="container">
+            <h1>👤 Profile Anda</h1>
+            <div id="profileRank" class="rank-display">
+                <span class="rank-icon">⭐</span>
+                <div class="rank-name">Colektor Baru</div>
+            </div>
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span>Name:</span>
+                    <span id="profileName">-</span>
+                </div>
+                <div class="stat-item">
+                    <span>ID:</span>
+                    <span id="profileId">-</span>
+                </div>
+                <div class="stat-item">
+                    <span>Coin:</span>
+                    <span id="profileCoin">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Total Kartu:</span>
+                    <span id="totalCards">0</span>
+                </div>
+            </div>
+            <h3>Koleksi Kartu</h3>
+            <div id="collectionDisplay" class="card-display"></div>
+            <button onclick="logout()">Log-Out</button>
+            <button onclick="showPage('homePage')">Kembali</button>
+        </div>
+    </div>
+
+    <!-- Halaman Kode -->
+    <div id="codePage" class="page">
+        <div class="container">
+            <h1>🔢 Tukarkan Kode</h1>
+            <div class="code-input">
+                <input type="text" id="codeInput" placeholder="Masukkan kode disini">
+            </div>
+            <button onclick="redeemCode()">Tukar</button>
+            <div id="codeResult"></div>
+            <button onclick="showPage('homePage')">Kembali</button>
+        </div>
+    </div>
+
+    <script>
+        // Data kartu - Superhero, Hewan, Bunga
+        const superheroEmojis = ["🦸‍♂️","🦸‍♀️","🦹‍♂️","🦹‍♀️","🥷","🧙‍♂️","🧙‍♀️","🧚‍♂️","🧚‍♀️","🧛‍♂️","🧛‍♀️","🧜‍♂️","🧜‍♀️","🧝‍♂️","🧝‍♀️","🧞‍♂️","🧞‍♀️","🧟‍♂️","🧟‍♀️","🧔‍♂️","👨‍🎤","👩‍🎤","👨‍🚀","👩‍🚀","👨‍✈️","👩‍✈️","🕵️‍♂️","🕵️‍♀️","💂‍♂️","💂‍♀️","👷‍♂️","👷‍♀️","👮‍♂️","👮‍♀️","🤴","👸","👳‍♂️","👳‍♀️","👲","🧕","🥷","🤵‍♂️","🤵‍♀️","👰‍♂️","👰‍♀️","🦸","🦹"];
+
+        const animalEmojis = ["🦁","🐯","🐻","🐼","🐨","🐰","🦊","🐺","🐶","🐱","🐭","🐹","🐻‍❄️","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐒","🐔","🐧","🐦","🐤","🐣","🐥","🦆","🦅","🦉","🦇","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐜","🦗","🕷️","🦂","🐢","🐍","🦎","🦖","🦕","🐙","🦑","🦐","🦞","🦀","🐡","🐠","🐟","🐬","🐳","🐋","🦈","🐊","🐅","🐆","🦓","🦍","🦧","🐘","🦛","🦏","🐪","🐫","🦒","🦘","🦬","🐃","🐂","🐄","🐎","🐖","🐏","🐑","🦙","🐐","🦌","🐕","🐩","🦮","🐕‍🦺","🐈","🐈‍⬛","🐓","🦃","🦚","🦜","🦢","🦩","🕊️","🐇","🦝","🦨","🦡","🦦","🦥","🐁","🐀","🐿️","🦔"];
+
+        const flowerEmojis = ["🌸","🌺","🌻","🌹","🥀","🌷","🌼","💐","🌿","🌱","🍀","🍃","🌾","🌲","🌳","🌴","🌵","🌊","🌪️","🔥","✨","🌟","💫","⭐","🌙","☀️","🌈","☁️","❄️","⚡","🌈","🌅","🌄","🌠","🌇","🌆","🌉","🌃","🌍","🌎","🌏","🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘","🪐","💥","☄️","🌪️","🌈","⚡","☀️","🌤️","⛅","🌥️","☁️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","🌬️","💨","💧","💦","☔","🪸","🪷","🪹","🪺","🫧"];
+
+        // Sistem Pangkat
+        const ranks = [
+            { name: "Colektor Rendahan", icon: "🥉", minCards: 0, color: "#8B4513" },
+            { name: "Colektor Baru", icon: "⭐", minCards: 10, color: "#FFD700" },
+            { name: "Colektor Biasa", icon: "🥈", minCards: 25, color: "#C0C0C0" },
+            { name: "Colektor Sultan I", icon: "👑", minCards: 50, color: "#FF6347" },
+            { name: "Colektor Sultan II", icon: "💎", minCards: 75, color: "#40E0D0" },
+            { name: "Colektor Sultan III", icon: "🏆", minCards: 100, color: "#9370DB" },
+            { name: "Colektor Sultan IV", icon: "🌟", minCards: 150, color: "#FF1493" },
+            { name: "Colektor Sultan V", icon: "⚡", minCards: 200, color: "#00CED1" },
+            { name: "Colektor Sultan VI", icon: "🔥", minCards: 250, color: "#FF4500" },
+            { name: "Colektor Juragan", icon: "👑", minCards: 300, color: "#FFD700" }
+        ];
+
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('coleccionUsersV2')) || {};
+
+        // Generate kartu dengan rarity
+        function generateCards() {
+            const cards = [];
+            let id = 0;
+            
+            // Superhero Cards
+            superheroEmojis.forEach((emoji) => {
+                const rarity = Math.random() < 0.02 ? 5 : 
+                             Math.random() < 0.08 ? 4 : 
+                             Math.random() < 0.2 ? 3 : 
+                             Math.random() < 0.4 ? 2 : 1;
+                cards.push({
+                    id: id++,
+                    emoji: emoji,
+                    rarity: rarity,
+                    type: 'superhero',
+                    name: `Superhero ${id}`
+                });
+            });
+
+            // Animal Cards
+            animalEmojis.forEach((emoji) => {
+                const rarity = Math.random() < 0.015 ? 5 : 
+                             Math.random() < 0.06 ? 4 : 
+                             Math.random() < 0.15 ? 3 : 
+                             Math.random() < 0.35 ? 2 : 1;
+                cards.push({
+                    id: id++,
+                    emoji: emoji,
+                    rarity: rarity,
+                    type: 'animal',
+                    name: `Hewan ${id}`
+                });
+            });
+
+            // Flower Cards
+            flowerEmojis.forEach((emoji) => {
+                const rarity = Math.random() < 0.01 ? 5 : 
+                             Math.random() < 0.04 ? 4 : 
+                             Math.random() < 0.1 ? 3 : 
+                             Math.random() < 0.3 ? 2 : 1;
+                cards.push({
+                    id: id++,
+                    emoji: emoji,
+                    rarity: rarity,
+                    type: 'flower',
+                    name: `Bunga ${id}`
+                });
+            });
+
+            return cards;
+        }
+
+        const allCards = generateCards();
+
+        // Fungsi login
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (!username || !password) {
+                errorDiv.textContent = 'Username dan password harus diisi!';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Password tidak cocok!';
+                return;
+            }
+
+            if (!users[username]) {
+                users[username] = {
+                    password: password,
+                    coins: 150,
+                    cards: [],
+                    id: Date.now().toString(),
+                    rank: 0
+                };
+                localStorage.setItem('coleccionUsersV2', JSON.stringify(users));
+            } else if (users[username].password !== password) {
+                errorDiv.textContent = 'Password salah!';
+                return;
+            }
+
+            currentUser = username;
+            showPage('homePage');
+            updateProfile();
+            updateRankDisplay();
+        }
+
+        // Update tampilan pangkat
+        function updateRankDisplay() {
+            const user = users[currentUser];
+            if (!user) return;
+
+            const totalCards = user.cards.reduce((sum, card) => sum + card.count, 0);
+            let currentRank = ranks[0];
+            let nextRank = ranks[1];
+
+            for (let i = ranks.length - 1; i >= 0; i--) {
+                if (totalCards >= ranks[i].minCards) {
+                    currentRank = ranks[i];
+                    user.rank = i;
+                    nextRank = ranks[i + 1] || ranks[i];
+                    break;
+                }
+            }
+
+            const progress = nextRank.minCards > 0 ? 
+                Math.min((totalCards / nextRank.minCards) * 100, 100) : 100;
+
+            const rankHTML = `
+                <span class="rank-icon">${currentRank.icon}</span>
+                <div class="rank-name">${currentRank.name}</div>
+                <div>Koleksi: ${totalCards} Kartu</div>
+                <div class="rank-progress">
+                    <div class="rank-progress-bar" style="width: ${progress}%"></div>
+                </div>
+                ${nextRank !== currentRank ? `<div style="font-size: 12px; margin-top: 5px;">${nextRank.minCards - totalCards} kartu lagi ke ${nextRank.name}</div>` : ''}
+            `;
+
+            document.getElementById('rankDisplay').innerHTML = rankHTML;
+            document.getElementById('profileRank').innerHTML = rankHTML;
+        }
+
+        // Fungsi logout
+        function logout() {
+            currentUser = null;
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('confirmPassword').value = '';
+            showPage('loginPage');
+        }
+
+        // Ganti halaman
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            if (pageId === 'profilePage') {
+                displayCollection();
+            }
+            if (pageId === 'homePage') {
+                updateRankDisplay();
+            }
+        }
+
+        // Update profile
+        function updateProfile() {
+            if (!currentUser || !users[currentUser]) return;
+            
+            const user = users[currentUser];
+            document.getElementById('profileName').textContent = currentUser;
+            document.getElementById('profileId').textContent = user.id;
+            document.getElementById('profileCoin').textContent = user.coins;
+            document.getElementById('totalCards').textContent = user.cards.reduce((sum, card) => sum + card.count, 0);
+        }
+
+        // Spin kartu
+        function spin(times) {
+            const user = users[currentUser];
+            if (!user) return;
+
+            const cost = times === 1 ? 10 : 40;
+            if (user.coins < cost) {
+                document.getElementById('spinResult').innerHTML = '<div class="error">Coin tidak cukup!</div>';
+                return;
+            }
+
+            user.coins -= cost;
+            const results = [];
+            let newCards = 0;
+            let legendaryCards = 0;
+
+            for (let i = 0; i < times; i++) {
+                const randomCard = allCards[Math.floor(Math.random() * allCards.length)];
+                const userCard = user.cards.find(c => c.id === randomCard.id);
+                
+                if (!userCard) {
+                    user.cards.push({...randomCard, count: 1});
+                    newCards++;
+                } else {
+                    userCard.count++;
+                }
+
+                if (randomCard.rarity === 5) legendaryCards++;
+                results.push(randomCard);
+            }
+
+            localStorage.setItem('coleccionUsersV2', JSON.stringify(users));
+            updateProfile();
+            updateRankDisplay();
+
+            // Tampilkan hasil
+            let resultHTML = `<div class="success">Kamu mendapatkan ${newCards} kartu baru! ${legendaryCards > 0 ? `🎉 ${legendaryCards} Legendary!` : ''}</div>`;
+            results.forEach(card => {
+                const cardClass = card.rarity === 5 ? 'legendary-effect' : '';
+                resultHTML += `
+                    <div class="card new-card-animation ${cardClass}" style="display: inline-block; margin: 5px; width: 120px;">
+                        <span class="card-emoji">${card.emoji}</span>
+                        <div class="card-rarity rarity-${card.rarity}">${'★'.repeat(card.rarity)}</div>
+                        <div style="font-size: 10px;">${card.type}</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('spinResult').innerHTML = resultHTML;
+        }
+
+        // Tampilkan koleksi
+        function displayCollection() {
+            const user = users[currentUser];
+            if (!user) return;
+
+            const collectionDiv = document.getElementById('collectionDisplay');
+            collectionDiv.innerHTML = '';
+
+            // Urutkan berdasarkan rarity
+            user.cards.sort((a, b) => b.rarity - a.rarity);
+
+            user.cards.forEach(card => {
+                const cardDiv = document.createElement('div');
+                let cardClass = '';
+                if (card.type === 'superhero') cardClass = 'superhero-card';
+                else if (card.type === 'animal') cardClass = 'animal-card';
+                else if (card.type === 'flower') cardClass = 'flower-card';
+
+                if (card.rarity === 5) cardClass += ' legendary-effect';
+
+                cardDiv.className = `card ${cardClass}`;
+                cardDiv.innerHTML = `
+                    <span class="card-emoji">${card.emoji}</span>
+                    <div class="card-rarity rarity-${card.rarity}">${'★'.repeat(card.rarity)}</div>
+                    <div style="font-size: 10px;">${card.type}</div>
+                    <div>x${card.count}</div>
+                `;
+                collectionDiv.appendChild(cardDiv);
+            });
+        }
+
+        // Redeem kode
+        function redeemCode() {
+            const code = document.getElementById('codeInput').value.toUpperCase();
+            const user = users[currentUser];
+            if (!user) return;
+
+            // Daftar kode
+            const codes = {
+                'HERO123': 300,
+                'ANIMAL': 250,
+                'FLOWER': 200,
+                'SUPERHERO': 500,
+                'WILDLIFE': 400,
+                'GARDEN': 350,
+                'LEGENDARY': 1000,
+                'EPICCARD': 600,
+                'RARESPECIES': 450,
+                'BLOOMING': 375,
+                'PREDATOR': 525,
+                'AVENGERS': 800,
+                'JUSTICE': 750,
+                'MARVEL': 650,
+                'DCUNIVERSE': 700,
+                'JUNGLE': 425,
+                'SAFARI': 475,
+                'ROSE': 275,
+                'TULIP': 225,
+                'SUNFLOWER': 325
+            };
+
+            if (codes[code]) {
+                user.coins += codes[code];
+                localStorage.setItem('coleccionUsersV2', JSON.stringify(users));
+                updateProfile();
+                document.getElementById('codeResult').innerHTML = `<div class="success">Berhasil! Kamu mendapatkan ${codes[code]} coin!</div>`;
+                document.getElementById('codeInput').value = '';
+            } else {
+                document.getElementById('codeResult').innerHTML = '<div class="error">Kode tidak valid!</div>';
+            }
+        }
+
+        // Generate kode baru (untuk admin)
+        function generateNewCode() {
+            const prefixes = ['HERO', 'ANIMAL', 'FLOWER', 'SUPER', 'WILD', 'GARDEN'];
+            const suffixes = ['123', '456', '789', '2024', 'LEGEND', 'EPIC'];
+            const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+            const randomSuffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+            const newCode = randomPrefix + randomSuffix;
+            const randomCoins = Math.floor(Math.random() * 800) + 200;
+            
+            console.log(`Kode baru: ${newCode} - ${randomCoins} coins`);
+            return { code: newCode, coins: randomCoins };
+        }
+
+        console.log('Kode-kode yang tersedia:');
+        console.log('- HERO123: 300 coins');
+        console.log('- ANIMAL: 250 coins');
+        console.log('- FLOWER: 200 coins');
+        console.log('- LEGENDARY: 1000 coins');
+        console.log('- Dan 20+ kode lainnya...');
+    </script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GOJO 3D Interface</title>
+
+<!-- Font & Icon -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #00fff7;
+  --accent: #ff00ff;
+  --bg-dark: #05020a;
+  --glass: rgba(255,255,255,0.05);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{
+  background: radial-gradient(circle at 50% 20%,#0a0013,#000);
+  overflow-x:hidden;
+  min-height:100vh;
+  color:#fff;
+}
+canvas#bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;}
+.container{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;padding:20px;
+}
+.card{
+  background:var(--glass);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(0,255,255,0.3);
+  border-radius:20px;
+  box-shadow:0 0 20px rgba(0,255,255,0.2),0 0 40px rgba(255,0,255,0.1);
+  padding:30px;max-width:480px;width:100%;
+  transform:perspective(800px) rotateX(3deg);
+  transition:0.3s ease;
+}
+.card:hover{transform:perspective(800px) rotateX(0deg) scale(1.02);}
+h1,h2{
+  font-family:'Orbitron',sans-serif;
+  text-align:center;
+  margin-bottom:15px;
+  text-shadow:0 0 10px var(--primary),0 0 20px var(--accent);
+}
+label{display:block;margin-top:10px;font-size:0.9em;color:#bff;}
+input,textarea{
+  width:100%;padding:10px;margin-top:5px;
+  background:rgba(0,0,0,0.5);
+  border:1px solid rgba(0,255,255,0.3);
+  border-radius:10px;color:#0ff;outline:none;
+}
+button{
+  width:100%;margin-top:15px;padding:10px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  border:none;border-radius:10px;
+  color:#000;font-weight:700;
+  cursor:pointer;transition:0.3s;
+  text-transform:uppercase;
+}
+button:hover{filter:brightness(1.2);}
+.hidden{display:none;}
+a{color:var(--primary);text-decoration:none;}
+img.hero{
+  width:160px;height:160px;object-fit:cover;border-radius:50%;
+  border:2px solid var(--primary);
+  box-shadow:0 0 30px var(--primary),0 0 60px var(--accent);
+  margin-bottom:15px;
+}
+#nav{display:flex;gap:10px;margin-top:15px;}
+#nav button{flex:1;}
+.message{text-align:center;margin-top:10px;font-size:0.9em;}
+.success{color:#0f0;}
+.error{color:#f33;}
+/* Floating animation */
+@keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.hero{animation:floaty 3s ease-in-out infinite;}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="container">
+  <!-- LOGIN -->
+  <div id="login" class="card">
+    <img src="https://photos.app.goo.gl/sSSdd38yzAHEpyKAA" alt="Gojo" class="hero" onerror="this.style.display='none'">
+    <h1>GOJO LOGIN</h1>
+    <label>Nama</label>
+    <input id="name" placeholder="Masukkan Nama Anda">
+    <label>Username</label>
+    <input id="username" placeholder="Masukkan Username">
+    <label>Password</label>
+    <input id="password" type="password" placeholder="Masukkan Password">
+    <button onclick="login()">Login</button>
+    <div id="loginMsg" class="message"></div>
+  </div>
+
+  <!-- HOME -->
+  <div id="home" class="card hidden">
+    <img src="https://photos.app.goo.gl/sSSdd38yzAHEpyKAA" alt="Gojo" class="hero" onerror="this.style.display='none'">
+    <h2>– GOJO –</h2>
+    <button onclick="window.open('https://vm.tiktok.com/ZSHvfXHABY4UH-V8GyZ/')">Join TikTok Channel</button>
+    <button onclick="window.open('https://whatsapp.com/channel/0029Vb6Qh0TGU3BKYr3erA0p')">Join WhatsApp Channel</button>
+    <hr style="margin:15px 0;border-color:rgba(0,255,255,0.2);">
+    <h3>⚪ Account Informasi</h3>
+    <p>👤 Nama: <span id="showName"></span><br>
+    🛡️ Role: <span id="showRole"></span><br>
+    📅 Tanggal: <span id="showDate"></span></p>
+    <div id="nav">
+      <button onclick="show('home')">🏠 Home</button>
+      <button onclick="show('ngl')">↩️ NgL</button>
+      <button onclick="show('info')">❗ Info</button>
+    </div>
+    <button onclick="logout()" style="margin-top:10px;background:#ff0040;color:#fff;">Logout</button>
+  </div>
+
+  <!-- NGL -->
+  <div id="ngl" class="card hidden">
+    <img src="https://photos.app.goo.gl/sSSdd38yzAHEpyKAA" alt="Gojo" class="hero" onerror="this.style.display='none'">
+    <h2>NgL Sender</h2>
+    <label>Target (contoh: https://ngl.link/target)</label>
+    <input id="ngl_target">
+    <label>Pesan</label>
+    <textarea id="ngl_message" rows="3"></textarea>
+    <label>Jumlah</label>
+    <input id="ngl_amount" type="number">
+    <button onclick="sendNGL()">Send Pesan</button>
+    <div id="nglMsg" class="message"></div>
+    <div id="nav">
+      <button onclick="show('home')">🏠 Home</button>
+      <button onclick="show('ngl')">↩️ NgL</button>
+      <button onclick="show('info')">❗ Info</button>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div id="info" class="card hidden">
+    <h2>INFORMASI</h2>
+    <p>👨‍💻 Developer: ㉨Hasnan㉨<br>
+    📞 Nomer: 628**85****99<br>
+    🧭 Note: Gunakan Aplikasi Ini Dengan Bijak.</p>
+    <div id="nav">
+      <button onclick="show('home')">🏠 Home</button>
+      <button onclick="show('ngl')">↩️ NgL</button>
+      <button onclick="show('info')">❗ Info</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// LOGIN
+const passwords={
+  "GOJOMEMBER99":"Member",
+  "GOJOADMIN7998":"Admin",
+  "GOJORESSELER070809":"Resseler"
+};
+let session=null;
+function login(){
+  const name=document.getElementById("name").value.trim();
+  const user=document.getElementById("username").value.trim();
+  const pass=document.getElementById("password").value.trim();
+  const msg=document.getElementById("loginMsg");
+  if(!name||!user||!pass){msg.textContent="Isi semua kolom!";msg.className="message error";return;}
+  if(passwords[pass]){
+    session={name,user,role:passwords[pass]};
+    msg.textContent="Login sukses!";
+    msg.className="message success";
+    setTimeout(()=>{show('home');updateInfo();},600);
+  }else{
+    msg.textContent="Password salah!";
+    msg.className="message error";
+  }
+}
+function show(id){
+  ["login","home","ngl","info"].forEach(v=>document.getElementById(v).classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+}
+function logout(){session=null;show("login");}
+function updateInfo(){
+  if(!session)return;
+  document.getElementById("showName").textContent=session.name;
+  document.getElementById("showRole").textContent=session.role;
+  document.getElementById("showDate").textContent=new Date().toLocaleString("id-ID");
+}
+
+// NGL
+async function sendNGL(){
+  const msgEl=document.getElementById("nglMsg");
+  const target=document.getElementById("ngl_target").value.trim();
+  const message=document.getElementById("ngl_message").value.trim();
+  const amount=document.getElementById("ngl_amount").value;
+  if(!target||!message){msgEl.textContent="Isi semua kolom!";msgEl.className="message error";return;}
+  msgEl.textContent="Mengirim...";
+  try{
+    const res=await fetch("https://ngl.link/api/submit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({target,message,amount})});
+    const txt=await res.text();
+    msgEl.innerHTML=`<span class='success'>Berhasil Mengirim ✅</span><pre>${txt}</pre>`;
+  }catch(e){
+    msgEl.innerHTML=`<span class='error'>Gagal: ${e}</span>`;
+  }
+}
+
+/* BACKGROUND 3D PARTICLES */
+const canvas=document.getElementById("bg");
+const ctx=canvas.getContext("2d");
+let w,h,particles=[];
+function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;}
+window.addEventListener("resize",resize);resize();
+for(let i=0;i<100;i++){
+  particles.push({x:Math.random()*w,y:Math.random()*h,z:Math.random()*3+0.2});
+}
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  for(let p of particles){
+    p.y+=p.z;p.x+=Math.sin(p.y/100)*0.5;
+    if(p.y>h)p.y=0;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.z,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${Math.floor(100+155*Math.random())},0,255,0.8)`;
+    ctx.fill();
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>

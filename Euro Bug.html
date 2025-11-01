@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Euro Bug App | Cyberpunk UI</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+:root{
+  --glow1:#00f3ff;
+  --glow2:#ff00c8;
+  --glass: rgba(0,0,0,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Orbitron',sans-serif;color:#fff;}
+body{background:#000;overflow:hidden;height:100vh;display:flex;align-items:center;justify-content:center;}
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;}
+.page{width:100%;max-width:420px;padding:24px;background:var(--glass);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.08);border-radius:20px;box-shadow:0 0 30px var(--glow1),0 0 60px var(--glow2);animation:rgb 6s infinite alternate;position:relative;z-index:2;}
+@keyframes rgb{0%{box-shadow:0 0 30px var(--glow1),0 0 60px var(--glow2);}100%{box-shadow:0 0 35px var(--glow2),0 0 65px var(--glow1);}}
+.logo{width:110px;height:110px;border-radius:50%;border:2px solid var(--glow1);margin:0 auto 12px;display:block;animation:pulse 2s infinite;}
+.logo.square{border-radius:12px;width:100%;height:160px;object-fit:cover;}
+@keyframes pulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px var(--glow1));}50%{transform:scale(1.03);filter:drop-shadow(0 0 14px var(--glow2));}}
+h2{text-align:center;letter-spacing:2px;margin-bottom:6px;font-size:1.4em;text-shadow:0 0 8px var(--glow1);}
+small{display:block;text-align:center;font-size:.7em;opacity:.7;margin-bottom:20px;}
+input,select{width:100%;padding:12px 14px;margin:10px 0;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.35);border-radius:8px;outline:none;transition:.3s;}
+input:focus,select:focus{border-color:var(--glow1);box-shadow:0 0 12px var(--glow1);}
+.btn{width:100%;padding:12px;margin-top:12px;border:none;border-radius:8px;background:linear-gradient(45deg,var(--glow1),var(--glow2));font-weight:bold;cursor:pointer;transition:.3s;letter-spacing:1px;}
+.btn:hover{filter:brightness(1.2);box-shadow:0 0 20px var(--glow1);}
+.nav{display:flex;justify-content:space-between;margin-top:20px;}
+.nav button{flex:1;margin:0 4px;padding:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;cursor:pointer;transition:.3s;}
+.nav button:hover{background:var(--glow1);color:#000;}
+a.btn{display:block;text-decoration:none;text-align:center;margin:10px 0;}
+.glitch{animation:glitch 1.5s infinite;}
+@keyframes glitch{0%,100%{text-shadow:0 0 8px var(--glow1);}20%{text-shadow:-2px 0 var(--glow2),2px 0 var(--glow1);}40%{text-shadow:2px 0 var(--glow2),-2px 0 var(--glow1);}}
+.hidden{display:none;}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+
+<!-- LOGIN -->
+<div id="loginPage" class="page">
+  <img src="https://files.catbox.moe/169c0p.jpeg" class="logo" alt="logo">
+  <h2>Euro Bug App</h2>
+  <small>Version_ 1.0</small>
+  <input id="user" type="text" placeholder="👤 Username...">
+  <input id="pass" type="password" placeholder="🔑 Password...">
+  <button class="btn" onclick="login()">Login</button>
+</div>
+
+<!-- HOME -->
+<div id="homePage" class="page hidden">
+  <img src="https://files.catbox.moe/169c0p.jpeg" class="logo square" alt="logo">
+  <h2>Euro Bug App</h2>
+  <small>Version_ 1.0</small>
+  <a class="btn glitch" href="https://vm.tiktok.com/ZSHvfXHABY4UH-V8GyZ/" target="_blank">Join Tiktok Channel : Follow our channel so you don't miss any further information.</a>
+  <a class="btn glitch" href="https://whatsapp.com/channel/0029Vb6Qh0TGU3BKYr3erA0p" target="_blank">Join Whatsapp Channel : Follow our channel so you don't miss any further information.</a>
+  <div class="nav">
+    <button onclick="showPage('homePage')">Home</button>
+    <button onclick="showPage('attackPage')">Attack</button>
+    <button onclick="showPage('infoPage')">Info</button>
+  </div>
+</div>
+
+<!-- ATTACK -->
+<div id="attackPage" class="page hidden">
+  <img src="https://files.catbox.moe/169c0p.jpeg" class="logo square" alt="logo">
+  <h2>Euro Crasher</h2>
+  <small>Version_ 1.0</small>
+  <label style="font-size:.8em;opacity:.8;">Enter Number :</label>
+  <input id="number" type="text" placeholder="Contoh : 62xxx">
+  <label style="font-size:.8em;opacity:.8;">Pilihan Bug :</label>
+  <select id="bugType">
+    <option>Freeze Delay</option><option>Crash iPhone</option><option>Xpay Delay</option><option>Delay Visible</option><option>ForceClose</option>
+  </select>
+  <button class="btn" onclick="sendBug()">Send Bug</button>
+  <div class="nav">
+    <button onclick="showPage('homePage')">Home</button>
+    <button onclick="showPage('attackPage')">Attack</button>
+    <button onclick="showPage('infoPage')">Info</button>
+  </div>
+</div>
+
+<!-- INFO -->
+<div id="infoPage" class="page hidden">
+  <img src="https://files.catbox.moe/169c0p.jpeg" class="logo square" alt="logo">
+  <h2>Info</h2>
+  <p style="font-size:.9em;margin-top:14px;">
+    Developer : Hasnan<br>
+    Status : <span style="color:#00f3ff;">Aktif</span>
+  </p>
+  <div class="nav">
+    <button onclick="showPage('homePage')">Home</button>
+    <button onclick="showPage('attackPage')">Attack</button>
+    <button onclick="showPage('infoPage')">Info</button>
+  </div>
+</div>
+
+<script>
+/* Particles */
+const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+const particles=[];
+for(let i=0;i<120;i++)particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2,sp:Math.random()*.5});
+function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#00f3ff';particles.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.y+=p.sp;if(p.y>canvas.height)p.y=0;});requestAnimationFrame(animate);}
+animate();window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;});
+/* Login strict Admin / 1 */
+function login(){
+  const u=document.getElementById('user').value.trim();
+  const p=document.getElementById('pass').value.trim();
+  if(u==="Admin"&&p==="1"){showPage('homePage');}else{alert('❌ Username / Password salah!');}
+}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
+function sendBug(){
+  const num=document.getElementById('number').value.trim();
+  const bug=document.getElementById('bugType').value;
+  if(num){alert(`✅ Berhasil Mengirim Bug "${bug}" ke "${num}"`);}else{alert('Masukkan nomor target!');}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-01-11 | Cyberpunk Interface</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: #0a0a0a;
+            color: #00ff41;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Animated Background */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ff41;
+            box-shadow: 0 0 10px #00ff41;
+            animation: float 10s infinite linear;
+        }
+        
+        @keyframes float {
+            from {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+            animation: glitch 2s infinite;
+        }
+        
+        @keyframes glitch {
+            0%, 100% {
+                text-shadow: 2px 0 #ff0040, -2px 0 #00ff41;
+            }
+            25% {
+                text-shadow: -2px 0 #ff0040, 2px 0 #00ff41;
+            }
+            50% {
+                text-shadow: 2px 0 #00ff41, -2px 0 #ff0040;
+            }
+            75% {
+                text-shadow: -2px 0 #00ff41, 2px 0 #ff0040;
+            }
+        }
+        
+        /* Loading Screen */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .logo-container {
+            font-size: 100px;
+            margin-bottom: 30px;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .loading-text {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .progress-bar {
+            width: 300px;
+            height: 30px;
+            border: 2px solid #00ff41;
+            position: relative;
+            overflow: hidden;
+            background: rgba(0, 255, 65, 0.1);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff41, #00ffff);
+            width: 0%;
+            transition: width 0.3s;
+            box-shadow: 0 0 20px #00ff41;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        /* Login Screen */
+        #loginScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        
+        .login-container {
+            background: rgba(0, 255, 65, 0.1);
+            border: 2px solid #00ff41;
+            padding: 40px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 50px rgba(0, 255, 65, 0.5);
+        }
+        
+        .login-logo {
+            text-align: center;
+            font-size: 60px;
+            margin-bottom: 30px;
+            animation: rotate 3s infinite linear;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #00ffff;
+        }
+        
+        .input-group input {
+            width: 300px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            font-family: 'Share Tech Mono', monospace;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #00ff41;
+            transform: scale(1.05);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #00ff41, #00ffff);
+            border: none;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 65, 0.5);
+        }
+        
+        /* Main App */
+        #mainApp {
+            display: none;
+            height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #00ff41;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .nav-item {
+            cursor: pointer;
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-item:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+        
+        .nav-item.active {
+            background: rgba(0, 255, 65, 0.2);
+            border-color: #00ff41;
+        }
+        
+        /* Content */
+        .content {
+            padding: 30px;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* Home Page */
+        .home-logo {
+            text-align: center;
+            font-size: 120px;
+            margin: 50px 0;
+            animation: glow 2s infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { 
+                text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41, 0 0 60px #00ff41;
+            }
+            50% { 
+                text-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff, 0 0 90px #00ffff;
+            }
+        }
+        
+        .channel-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 500px;
+            margin: 50px auto;
+        }
+        
+        .channel-btn {
+            padding: 20px;
+            background: rgba(0, 255, 65, 0.1);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .channel-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 65, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+        
+        .channel-btn:hover::before {
+            animation: shine 0.5s;
+        }
+        
+        @keyframes shine {
+            from { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 1; }
+            to { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+        
+        .channel-btn:hover {
+            transform: translateX(10px);
+            box-shadow: -10px 0 30px rgba(0, 255, 65, 0.5);
+        }
+        
+        /* Bug Page */
+        .bug-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #ff0040;
+        }
+        
+        .bug-logo {
+            text-align: center;
+            font-size: 80px;
+            margin-bottom: 30px;
+            color: #ff0040;
+        }
+        
+        .bug-input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: rgba(255, 0, 64, 0.1);
+            border: 1px solid #ff0040;
+            color: #ff0040;
+            border-radius: 5px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        .bug-select {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #ff0040;
+            color: #ff0040;
+            border-radius: 5px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        .execute-btn {
+            background: linear-gradient(45deg, #ff0040, #ff6600);
+            color: #fff;
+        }
+        
+        /* Bots Page */
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            height: 500px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .user-message {
+            background: rgba(0, 255, 65, 0.1);
+            border-left: 3px solid #00ff41;
+        }
+        
+        .bot-message {
+            background: rgba(0, 255, 255, 0.1);
+            border-left: 3px solid #00ffff;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            padding: 20px;
+            border-top: 1px solid #00ffff;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            border-radius: 5px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        .send-btn {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background: #00ffff;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+        }
+        
+        /* Developer Page */
+        .developer-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #00ffff;
+        }
+        
+        .dev-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 5px;
+            border-left: 3px solid #00ffff;
+        }
+        
+        /* Calculator */
+        .calculator {
+            max-width: 400px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #00ff41;
+        }
+        
+        .calc-display {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            font-size: 24px;
+            text-align: right;
+            border-radius: 5px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .calc-btn {
+            padding: 20px;
+            background: rgba(0, 255, 65, 0.2);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .calc-btn:hover {
+            background: rgba(0, 255, 65, 0.4);
+            transform: scale(1.05);
+        }
+        
+        /* Add User */
+        .add-user-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #00ffff;
+        }
+        
+        /* Time Display */
+        .time-display {
+            font-size: 24px;
+            font-family: 'Orbitron', monospace;
+            color: #00ffff;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        /* User Profile */
+        .user-profile {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #00ff41;
+        }
+        
+        .profile-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0, 255, 65, 0.1);
+            border-radius: 5px;
+            border-left: 3px solid #00ff41;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Particles -->
+    <div id="particles"></div>
+    
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <div class="logo-container glitch">🧿❌</div>
+        <div class="loading-text">X-01-11</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-text" id="progressText">0%</div>
+        </div>
+    </div>
+    
+    <!-- Login Screen -->
+    <div id="loginScreen">
+        <div class="login-container">
+            <div class="login-logo">🧿❌</div>
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>Username :</label>
+                    <input type="text" id="username" placeholder="Masukkan Username" required>
+                </div>
+                <div class="input-group">
+                    <label>Password :</label>
+                    <input type="password" id="password" placeholder="Masukkan Password" required>
+                </div>
+                <button type="submit" class="btn">[ LOGIN ]</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Main App -->
+    <div id="mainApp">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="glitch">|||||</div>
+                <div>X-01-11</div>
+            </div>
+            <div class="header-right">
+                <div class="nav-item" onclick="showPage('home')">🏠 Home</div>
+                <div class="nav-item" onclick="showPage('bug')">🧿 Bug</div>
+                <div class="nav-item" onclick="showPage('bots')">🤖 Bots</div>
+                <div class="nav-item" onclick="showPage('profile')">👤</div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Home Page -->
+            <div id="home" class="page active">
+                <div class="home-logo glitch">🧿❌</div>
+                <div class="channel-buttons">
+                    <div class="channel-btn" onclick="window.open('https://vm.tiktok.com/ZSHvfXHABY4UH-V8GyZ/', '_blank')">
+                        <h3>[ Join Tiktok Channel ]</h3>
+                        <p>Follow our channel so you don't miss any further information.</p>
+                    </div>
+                    <div class="channel-btn" onclick="window.open('https://whatsapp.com/channel/0029Vb6Qh0TGU3BKYr3erA0p', '_blank')">
+                        <h3>[ Join Whatsapp Channel ]</h3>
+                        <p>Follow our channel so you don't miss any further information.</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: center; gap: 30px; margin-top: 50px;">
+                    <div class="nav-item active" onclick="showPage('home')">🏠<br>[Home]</div>
+                    <div class="nav-item" onclick="showPage('bug')">🧿<br>[Bug]</div>
+                    <div class="nav-item" onclick="showPage('bots')">🤖<br>[Bots]</div>
+                </div>
+            </div>
+            
+            <!-- Bug Page -->
+            <div id="bug" class="page">
+                <div class="bug-container">
+                    <div class="bug-logo glitch">🧿❌</div>
+                    <h2 style="text-align: center; margin-bottom: 20px; color: #ff0040;">BUG ATTACK</h2>
+                    <input type="text" class="bug-input" id="targetNumber" placeholder="Please input Target number. example : 62xxxx">
+                    <p style="color: #888; margin-bottom: 20px;">e.g : Contoh 62xxxxxxxx</p>
+                    <select class="bug-select" id="bugType">
+                        <option value="">Pilih Bug:</option>
+                        <option value="freeze">Freeze Delay</option>
+                        <option value="crash">Crash iPhone</option>
+                        <option value="xpay">Xpay Delay</option>
+                        <option value="visible">Delay Visible</option>
+                        <option value="force">ForceClose</option>
+                    </select>
+                    <button class="btn execute-btn" onclick="executeBug()">[Execute]</button>
+                </div>
+            </div>
+            
+            <!-- Bots Page -->
+            <di
